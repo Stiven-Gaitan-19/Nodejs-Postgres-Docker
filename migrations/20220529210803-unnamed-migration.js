@@ -8,6 +8,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    queryInterface.drop('users');
+    queryInterface.dropTable('users');
   },
 };
