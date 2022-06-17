@@ -4,7 +4,7 @@ let { userSchema } = require('../models/user');
 let { customerSchema } = require('../models/customer');
 let { categorySchema } = require('../models/category');
 let { productSchema } = require('../models/product');
-let { orderSchema } = require('../models/order');
+const {  DataTypes, NOW } = require('sequelize');
 let { orderProductSchema } = require('../models/order-product');
 
 module.exports = {
@@ -14,7 +14,28 @@ module.exports = {
     await queryInterface.createTable('customers', customerSchema);
     await queryInterface.createTable('categories', categorySchema);
     await queryInterface.createTable('products', productSchema);
-    await queryInterface.createTable('orders', orderSchema);
+    await queryInterface.createTable('orders', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        field: 'created_at',
+        defaultValue: NOW,
+      },
+      customerId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        field: 'customer_id',
+        references: { model: 'customers', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      }
+    });
     await queryInterface.createTable('orders_products', orderProductSchema);
   },
 
