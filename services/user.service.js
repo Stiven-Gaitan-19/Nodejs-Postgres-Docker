@@ -5,7 +5,9 @@ class UserService {
   constructor() {}
 
   async create(data) {
-    return models.User.create(data);
+    let user = await models.User.create(data);
+    delete user.dataValues.password;
+    return user.dataValues;
   }
 
   async find() {
@@ -14,6 +16,14 @@ class UserService {
 
   async findOne(id) {
     let user = await models.User.findByPk(id);
+    if(!user){
+      throw boom.notFound('User not found');
+    }
+    return user;
+  }
+
+  async findByEmail(email) {
+    let user = await models.User.findOne({where: {email}});
     if(!user){
       throw boom.notFound('User not found');
     }

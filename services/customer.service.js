@@ -2,10 +2,12 @@ const boom = require('@hapi/boom');
 const models = require('../models');
 
 class UserService {
-  constructor() {}
+  constructor()  
 
   async create(data) {
-    return models.Customer.create(data, {include: ['user']});
+    let customer = await models.Customer.create(data, {include: ['user']});
+    delete customer.dataValues.user.dataValues.password;
+    return customer.dataValues;
   }
 
   async find() {

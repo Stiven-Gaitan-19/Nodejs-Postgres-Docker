@@ -5,6 +5,7 @@ const { Category, categorySchema } = require('./category');
 const { Order, orderSchema } = require('./order');
 const { OrderProduct, orderProductSchema } = require('./order-product');
 const sequelize = require('../libs/sequealize');
+const bcrypt = require('bcrypt');
 
 (function setupModels() {
   User.init(userSchema, {
@@ -12,6 +13,11 @@ const sequelize = require('../libs/sequealize');
     modelName: 'User',
     tableName: 'users',
     timestamps: false,
+    hooks: {
+      beforeCreate: async (user)=> {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+    }
   });
   Customer.init(customerSchema, {
     sequelize,
