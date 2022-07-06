@@ -2,7 +2,7 @@ const boom = require('@hapi/boom');
 const models = require('../models');
 
 class UserService {
-  constructor()  
+  constructor(){}
 
   async create(data) {
     let customer = await models.Customer.create(data, {include: ['user']});
