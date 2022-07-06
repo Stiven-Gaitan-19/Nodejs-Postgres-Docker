@@ -3,6 +3,7 @@ const cors = require('cors');
 const routerApi = require('./routes');
 
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
+const checkPermissions = require('./middlewares/auth');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
   res.send('Hola mi server en express');
 });
 
-app.get('/nueva-ruta', (req, res) => {
+app.get('/nueva-ruta', checkPermissions, (req, res) => {
   res.send('Hola, soy una nueva ruta');
 });
 
