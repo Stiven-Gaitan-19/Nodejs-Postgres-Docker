@@ -1,10 +1,25 @@
 const Boom = require('@hapi/boom');
 
-module.exports = function checkPermissions (req, _res, next){
+function checkPermissions (req, _res, next){
     let api = req.headers['api'];
     if(api !== 'my_password'){
         return next(Boom.unauthorized());
     }
 
     next();
+}
+
+function checkScopes(...roles){
+    return function (req, res, next) {
+        let { user } = req;
+        if(roles.includes(user.role)){
+            return next();
+        }
+        return next(Boom.unauthorized());
+    }
+}
+
+module.exports = {
+    checkPermissions,
+    checkScopes
 }
