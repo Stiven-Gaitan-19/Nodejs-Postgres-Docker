@@ -15,7 +15,7 @@ function checkScopes(...roles){
         if(roles.includes(user.role)){
             return next();
         }
-        return next(Boom.unauthorized());
+        return next(Boom.forbidden());
     }
 }
 
