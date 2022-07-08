@@ -36,7 +36,7 @@ let schema = {
   total: {
     type: DataTypes.VIRTUAL,
     get() {
-      if(this.items.length > 0){
+      if(this.items){
         return this.items.reduce((total, item) => {
           return total + (item.price * item.OrderProduct.amount);
         }, 0);
