@@ -7,6 +7,7 @@ class UserService {
   async create(data) {
     let user = await models.User.create(data);
     delete user.dataValues.password;
+    delete user.dataValues.recoveryToken;
     return user.dataValues;
   }
 

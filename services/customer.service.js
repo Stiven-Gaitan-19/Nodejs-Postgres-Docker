@@ -7,6 +7,7 @@ class UserService {
   async create(data) {
     let customer = await models.Customer.create(data, {include: ['user']});
     delete customer.dataValues.user.dataValues.password;
+    delete customer.dataValues.user.dataValues.recoveryToken;
     return customer.dataValues;
   }
 
