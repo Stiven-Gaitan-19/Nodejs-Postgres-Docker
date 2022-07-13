@@ -24,6 +24,11 @@ let schema = {
     field: 'created_at',
     defaultValue: NOW,
   },
+  recoveryToken:{
+    allowNull: true,
+    field: 'recovery_token',
+    type: DataTypes.STRING,
+  },
   role: {
     allowNull: false,
     type: DataTypes.STRING,
