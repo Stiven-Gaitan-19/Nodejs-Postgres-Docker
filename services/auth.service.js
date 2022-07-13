@@ -10,35 +10,44 @@ const service = new UserService();
 class AuthService {
 	constructor() {}
 
-	signToken(user) {
+	signToken(user, expires) {
+		let options = {};
 		const payload = {
 			sub: user.id,
 			role: user.role,
 		};
-		const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
+
+		if (expires) {
+			options.expiresIn = expires;
+		}
+
+		const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
 		return { user, token };
 	}
 
 	async sendRecoveryEmail(email) {
 		try {
-			await service.findByEmail(email);
+			let user = await service.findByEmail(email);
+			let token = this.signToken(user, '15min').token;
+
+			await service.update(user.id, { recoveryToken: token });
+
+			let emailSender = emailBuilder
+				.setTo(email)
+				.setSubject('Password Recovery')
+				.setText('For Recover your password clic here => ' + token)
+				.build();
+
+			await emailSender.sendEmail();
 		} catch (error) {
 			if (error.isBoom) {
 				if (error.output.payload.error === 'Not Found') {
 					throw boom.unauthorized();
 				}
 			}
-
-			throw boom.internal();
+			
+			throw error;
 		}
-
-		let emailSender = emailBuilder
-			.setTo(email)
-			.setSubject('Password Recovery')
-			.setText('You just asked for recovery your password')
-			.build();
-
-		await emailSender.sendEmail();
 	}
 }
 
